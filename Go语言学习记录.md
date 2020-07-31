@@ -1,4 +1,4 @@
-
+go语言标准库：https://studygolang.com/pkgdoc
 
 go语言学习链接：http://shouce.jb51.net/gopl-zh/ch1/ch1-01.html
 
@@ -51,11 +51,11 @@ SET GOARCH=AMD64
 
 go run ./ 等同于 go run *.go （windows支持的是./）
 
-go语言从键盘输入读取数据的几种方法
 
 
+**iota是golang语言的常量计数器,只能在常量的表达式中使用。**
 
-const 常量碰到iota时 iota初始为0,const里面没出现一次变量声明iota都会迭代一次，类似枚举
+**const 常量碰到iota时 iota初始为0,const里面每出现一次变量声明iota都会迭代一次，类似枚举**
 
 ```go
 const（
@@ -247,13 +247,13 @@ var s2 = make(map[string]\[]int,3)
 
 
 
-go语言中的return操作：return操作不是原子性的
+**go语言中的return操作：return操作不是原子性的**
 
-1.首先是返回值赋值
+**1.首先是返回值赋值**
 
-2.如果有defer先做defer操作
+**2.如果有defer先做defer操作**
 
-3.真正的ret返回
+**3.真正的ret返回**
 
 
 
@@ -343,3 +343,335 @@ json.Unmarshal(data, &titles)
 ```
 
 将json字符反转转成结构体slice，可以选择只接受部分json成员，不要其他的成员
+
+流式的json的解码器：json.Decoder
+
+
+
+**GitHub的Web服务接口 https://developer.github.com/v3/** 
+
+
+
+Sprintf是把格式化的数据写入到某个字符串中。返回值为字符串的长度
+
+fprintf是用于文件操作的
+
+
+
+```Go
+// prereqs记录了每个课程的前置课程
+var prereqs = map[string][]string{
+    "algorithms": {"data structures"},
+    "calculus": {"linear algebra"},
+    "compilers": {
+        "data structures",
+        "formal languages",
+        "computer organization",
+    },
+    "data structures":       {"discrete math"},
+    "databases":             {"data structures"},
+    "discrete math":         {"intro to programming"},
+    "formal languages":      {"discrete math"},
+    "networks":              {"operating systems"},
+    "operating systems":     {"data structures", "computer organization"},
+    "programming languages": {"data structures", "computer organization"},
+}
+```
+
+
+
+
+
+os类的文件操作：
+
+```go
+func main()  {
+   //1.创建一个目录,仅创建一层
+   //err:=os.Mkdir("C:\\liu\\pro\\aa", 0666)
+   //fmt.Println(err)
+   //2.创建一个目录，可以多层
+   //err = os.MkdirAll("C:\\liu\\pro\\bb\\cc" , 0666)
+   //fmt.Println(err)
+
+   //3.创建文件
+   //file, err:=os.Create("C:\\liu\\pro\\bb\\cc\\ee.txt")
+   //fmt.Println(err) //open C:\liu\pro\bb\cc\dd\ee.txt: The system cannot find the path specified.
+   //fmt.Println(file) //<nil>
+
+   // 4.删除：慎用，慎用，再慎用。。
+   // remove C:\Ruby\pro\bb: The directory is not empty.
+   //err := os.Remove("C:\\liu\\pro\\bb\\cc\\ee.txt") // bb\\cc\\ee.txt
+   //fmt.Println(err)
+   //删除文件或目录，无论目录中是否有内容
+   //err:=os.RemoveAll("C:\\liu\\pro\\bb")
+   //fmt.Println(err)
+
+   //5.打开文件,当前程序和本地aa.txt文件之间建立了一个链接。。
+   file,err:=os.Open("C:\\liu\\pro\\aa.txt")
+   fmt.Println(err)
+   fmt.Println(os.IsExist(err)) //false
+   fmt.Println(os.IsNotExist(err)) //true
+   fmt.Println(file)
+   // 6.关闭文件
+   defer file.Close()//断开程序和文件之间的链接，释放资源。
+   // 读操作，写数据。。。
+
+
+}
+```
+
+
+
+下面的声明语句，Celsius类型的参数c出现在了函数名的前面，表示声明的是Celsius类型的一个名叫String的方法，该方法返回该类型对象c带着°C温度单位的字符串：
+
+```Go
+func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
+```
+
+
+
+**自定义类型：**
+
+**类型别名：**
+
+```go
+type myInt = int
+```
+
+
+
+方法附加：只要底层类型不是指针或者接口即可
+
+
+
+go语言封装的优点：
+
+首先，因为调用方不能直接修改对象的变量值，其只需要关注少量的语句并且只要弄懂少量变量的可能的值即可。
+
+第二，隐藏实现的细节，可以防止调用方依赖那些可能变化的具体实现，这样使设计包的程序员在不破坏对外的api情况下能得到更大的自由。
+
+封装的第三个优点也是最重要的优点，是阻止了外部调用方对对象内部的值任意地进行修改。因为对象内部变量只可以被同一个包内的函数修改，所以包的作者可以让这些函数确保对象内部的一些值的不变性
+
+
+
+字符串常用拼接：
+
+```go
+var bt bytes.Buffer
+
+var bt bytes.Builder
+
+bt.WriteString(s1)
+
+bt.WriteString(s2)
+
+s3 : =bt.String()
+```
+
+
+
+**fmt包详解：**https://www.cnblogs.com/Survivalist/articles/10287297.html
+
+
+
+**指针接收者和值接受者的区别：**
+
+值接受者：无论你传入的是值还是指针都可以使用，同时要注意值接受者传入你在方法里面进行的修改是修改不了原来的变量的。
+
+指针接受者：只能接受指针的传入，指针接受者可以修改原来的变量的值。
+
+![image-20200720091529232](C:\Users\ZONST\AppData\Roaming\Typora\typora-user-images\image-20200720091529232.png)
+
+**动态值和动态类类型：**
+
+接口的类型可以接收赋值给他的实现类型：a=c2     //动态值
+
+赋值之后的类型会变成main.cat类型或者*main.cat类型  // 动态类型
+
+
+
+
+
+文件读写：
+
+三种读文件操作的：os.Open(fileName)
+
+**第一种：length，err :=fileObject.Read(接受文件内容的参数)**
+
+```go
+func main() {
+
+  fileObject, err := os.Open("D:/GO/goFileTest/aaa.txt")
+
+  if err != nil {
+
+​    fmt.Printf("open file failed ,err :%v", err)
+
+​    return
+
+  }
+
+  //关闭文件
+
+  defer fileObject.Close()
+
+  //读取文件内容
+
+  var temp [128]byte
+
+  length, err := fileObject.Read(temp[:])
+
+  if err != nil {
+
+​    fmt.Printf("read from file failed,err:%v", err)
+
+​    return
+
+  }
+
+  fmt.Println("读取了%d个字节\n", length)
+
+  fmt.Println(string(temp[:length]))
+
+}
+```
+
+**第二种：reader :=bufio.NewReader(fileObject)**
+
+line ,err: =reader.ReadString('\n')
+
+与第一种的区别一个是第一种的直接Read的方法返回值是长度，这个bufio的Read是返回一行读取到的文件内容。
+
+第二个区别是第一个是可以控制自己想要读多少字的，第二种是直接读取一行的内容
+
+
+
+**第三种：io/ioutil包的读取** 
+
+ret ,err:= ioutil.ReadFile(文件名的路径) 这种的区别就是一次将整个文件的内容全部读取进来了
+
+
+
+文件写权限：https://studygolang.com/articles/5024
+
+O_RDONLY：只读模式(read-only)
+O_WRONLY：只写模式(write-only)
+O_RDWR：读写模式(read-write)
+O_APPEND：追加模式(append)
+O_CREATE：文件不存在就创建(create a new file if none exists.)
+O_EXCL：与 O_CREATE 一起用，构成一个新建文件的功能，它要求文件必须不存在(used with O_CREATE, file must not exist)
+O_SYNC：同步方式打开，即不使用缓存，直接写入硬盘
+O_TRUNC：打开并清空文件
+
+
+
+文件的写操作：
+
+1.fileObject.Write()
+
+fileObject.WriteString()
+
+
+
+2.writer := bufio.NewWriter(fileObject)
+
+writer.WriterString("")
+
+
+
+3.ioutil
+
+str := "hello word"
+
+err := ioutil.WriteFile("fileName",[]byte(str),0666)
+
+在文件的中间位置去写，首先权限设置成os.O_RDWR (可读可写)
+
+fileObject.Seek(1,0)    ab   ab中间的位置，如果是
+
+a
+
+b
+
+Seek(3,0)windows后面是会有/r /n的
+
+
+
+time类：time.Now()    //获取当前时间
+
+time.Unix  //获取时间戳 对应的是秒
+
+time.UnixNano   //纳秒时间戳
+
+time.Unix(时间戳，0) 得到的是一个time对象
+
+
+
+v=reflect.TypeOf(x)   //反射类得到x的具体类型
+
+v.name()  //类型名字 如cat
+
+v.kind()  //真正的类型  如struct
+
+
+
+ValueOf().elem().setInt(200)  //获取指针进行修改参数的值
+
+reflect.ValueOf(a).IsNil()  //判断指针是否为空
+
+reflect.ValueOf(a).IsValid()  //判断值是否为空
+
+reflect.ValueOf(b).MethodByNaName("abc").IsValid() //判断该结构体是否含有abc方法
+
+reflect.ValueOf(b).FieldByNaName("abc").IsValid() //判断该结构体是否含有abc成员
+
+reflect.ValueOf(b).MapIndex(reflect.ValueOf("key")).Isvalid()  //尝试在map中查找一个不存在的key
+
+
+
+t:=reflect.TypeOf(stu1)
+
+t.Numfield()//获取结构体的成员数量
+
+field :=t.Field(i)  //获取每个成员变量
+
+field.Name   //获取对应的成员名字
+
+field.Index,    //获取对应的下标
+
+field.Type,     //获取对应的类型
+
+field.Tag.Get("zhoulin") //获取json tag映射的值
+
+![image-20200723105910558](C:\Users\ZONST\AppData\Roaming\Typora\typora-user-images\image-20200723105910558.png)
+
+![image-20200723105927630](C:\Users\ZONST\AppData\Roaming\Typora\typora-user-images\image-20200723105927630.png)
+
+![image-20200723110321653](C:\Users\ZONST\AppData\Roaming\Typora\typora-user-images\image-20200723110321653.png)
+
+![image-20200723110335049](C:\Users\ZONST\AppData\Roaming\Typora\typora-user-images\image-20200723110335049.png)
+
+
+
+strconv类：
+
+strconv.parseInt(str,10,32)//表示将字符串转化为int32位的十进制类型的数，但是返回的是一个int64位的数，加一个err，是为了防止数据的丢失，之后类型可以转换不丢失数据
+
+strconv.Atoi（str）//字符串转数字，返回int类型，加一个err
+
+strconv.Itoa(i)  //数字转字符串
+
+ParseBool(str)/Float //字符串转bool
+
+
+
+groutine 一定要指定为一个函数，要使用go去开启一个groutine
+
+如何判断groutine结束了用的是sync.WaitGroup
+
+
+
+goroutine和线程
+
+os线程（操作系统线程）一般独有固定的栈内存（通常为2MB），一个goroutine的栈在其生命周期开始时只有很小的栈（典型情况下时2KB），goroutine的栈不是固定的，他可以按需增大和缩小，goroutine的栈大小限制可以达到1GB，虽然极少会用到那么打。所以说GO语言中一次可以创建十万左右的goroutine也是可以的。
+
