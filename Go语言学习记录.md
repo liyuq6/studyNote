@@ -675,3 +675,6 @@ goroutine和线程
 
 os线程（操作系统线程）一般独有固定的栈内存（通常为2MB），一个goroutine的栈在其生命周期开始时只有很小的栈（典型情况下时2KB），goroutine的栈不是固定的，他可以按需增大和缩小，goroutine的栈大小限制可以达到1GB，虽然极少会用到那么打。所以说GO语言中一次可以创建十万左右的goroutine也是可以的。
 
+
+
+go的测试覆盖率：go test -cover

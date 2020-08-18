@@ -40,3 +40,8 @@ postgres=# create user liyuqi with password '123';
 
 进入用户为liyuqi的数据库test: psql -U liyuqi -d test
 
+
+
+pg_restore -d [数据库名] .dmp
+
+ALTER TABLE TABLENAME ALTER COLUMN 字段名 TYPE  类型
