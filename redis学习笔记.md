@@ -54,3 +54,12 @@ zrevrangebyscore zsetkey end_index start_index //从后面的下标到前面的�
 
 log日志级别：debug verbose notice warning
 
+
+
+redis开启事务：MULTI
+
+执行事务：EXEC
+
+关闭事务：DISCARD
+
+监听：WATCH
